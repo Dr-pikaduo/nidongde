@@ -1,4 +1,11 @@
 # nidongde
-nidongde is a Chinese phrase for "you know"
+nidongde is a Chinese phrase for "you know". Please control yourself!
 
-make sure you are older than 18.
+Make sure you are older than 18!
+
+
+## load.py
+load vedios
+
+## script.py
+load novels.
