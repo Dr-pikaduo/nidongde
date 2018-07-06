@@ -41,9 +41,15 @@ mp4_rx = re.compile('https://.*\\.mp4')
 
 def load(index, folder=None):
     """Load moives
+
+    Find the indexes of movies wantted on www.417mm.com,
+    then load it.
     
     Arguments:
-        index {int|[int]} -- index
+        index {int|list[int]|tuple(int, int)} -- index
+
+    Example:
+        load([29964, (34533, 24543)])
     """
 
     if isinstance(index, list):
@@ -51,7 +57,8 @@ def load(index, folder=None):
             load(n)
         return
     elif isinstance(index, tuple):
-        for n in range(index[0], index[1]+1):
+        a, b = min(index), max(index)
+        for n in range(a, b+1):
             load(n)
         return
 
@@ -84,6 +91,7 @@ def load(index, folder=None):
 
 
 def clever_load(style, lb, ub):
+    # load movies in some style from lb to ub
     (pages, index) = get_page(style)
     index1 = index - ub + 1
     index2 = index - lb + 1
