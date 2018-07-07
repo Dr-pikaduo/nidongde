@@ -13,3 +13,5 @@ search vedios with keywords (and styles)
 ## load_novels.py
 load novels.
 
+## misc
+I get first `✭star` in my github-life.
