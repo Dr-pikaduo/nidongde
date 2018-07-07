@@ -1,16 +1,16 @@
 #!/usr/local/bin/python
 # -*- coding: utf-8 -*-
 
-import bs4
+'''load videos from www.417mm.com
+'''
+
 import requests
-import re
 import pathlib
 
-# style: number
-STYLES = {'乱伦':27, '人妻':28, '偷拍':29, '学生':34, '巨乳':54, '日韩':55, '欧美':56, '动漫':58}
+import base
 
-digit_rx = re.compile('\d+')
-page_rx = re.compile('\d/(\d+)')
+# style: number
+
 
 def get_page(style):
     """get the number of pages and max index of the movies in certain style
@@ -21,23 +21,14 @@ def get_page(style):
     Returns:
         tuple -- (number of pages, max index)
     """
-    URL = "http://www.417mm.com/list/index%d.html" % STYLES[style]
 
-    response = requests.get(URL)
-    if response.encoding == 'ISO-8859-1':
-        encodings = requests.utils.get_encodings_from_content(response.text)
-        encoding = encodings[0] if encodings else response.apparent_encoding
-
-    content = response.content.decode(encoding, 'replace')
-
-    soup = bs4.BeautifulSoup(content, "html.parser")
+    URL = "http://www.417mm.com/list/index%d.html" % base.STYLES[style]
+    soup = base.url2soup(URL)
     s = soup.find_all('div', {'class':'con'})[0]
-    index = int(digit_rx.search(s.a['href'])[0])
+    index = int(base.digit_rx.search(s.a['href'])[0])
     p = soup.find('div', {'class': 'dede_pages'}).find('span')
-    pages = int(page_rx.search(p.text)[1])
+    pages = int(base.page_rx.search(p.text)[1])
     return pages, index
-
-mp4_rx = re.compile('https://.*\\.mp4')
 
 def load(index, folder=None):
     """Load moives
@@ -47,9 +38,10 @@ def load(index, folder=None):
     
     Arguments:
         index {int|list[int]|tuple(int, int)} -- index
+        folder -- the folder where videos are stored.
 
     Example:
-        load([29964, (34533, 24543)])
+        load([29964, (34533, 24543)])  # load index29964, 34533-24543
     """
 
     if isinstance(index, list):
@@ -63,20 +55,10 @@ def load(index, folder=None):
         return
 
     URL = "http://www.417mm.com/player/index%d.html?%d-0-0" % (index, index)
-    response = requests.get(URL)
-
-    if response.encoding == 'ISO-8859-1':
-        encodings = requests.utils.get_encodings_from_content(response.text)
-        if encodings:
-            encoding = encodings[0]
-        else:
-            encoding = response.apparent_encoding
-    content = response.content.decode(encoding, 'replace')
-
-    soup = bs4.BeautifulSoup(content, "html.parser")
+    soup = base.url2soup(URL)
     for s in soup.find_all('script', {"type": "text/javascript"}):
         if 'video' in s.text:
-            mp4 = mp4_rx.search(s.text)[0]
+            mp4 = base.mp4_rx.search(s.text)[0]
             break
 
     html = requests.get(mp4)
@@ -100,5 +82,4 @@ def clever_load(style, lb, ub):
 
 if __name__ == '__main__':
     # clever_load('日韩', lb=1, ub=7)
-    load(29964)
-    load((34533, 24543))
+    load([29964, (34533, 24543)])
