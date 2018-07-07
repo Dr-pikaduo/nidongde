@@ -7,5 +7,9 @@ Make sure you are older than 18!
 ## load.py
 load vedios
 
-## script.py
+## search.py
+search vedios with keywords (and styles)
+
+## load_novels.py
 load novels.
+
