@@ -11,6 +11,19 @@ import base
 
 # style: number
 
+def generalize(f):
+    def g(index, *args, **kwargs):
+        if isinstance(index, list):
+            for n in index:
+                g(n, *args, **kwargs)
+        elif isinstance(index, tuple): # tuple of ints
+            a, b = min(index), max(index)
+            for n in range(a, b+1):
+                f(n, *args, **kwargs)
+        else:  # index: int
+            f(index, *args, **kwargs)
+    return g
+
 
 def get_page(style):
     """get the number of pages and max index of the movies in certain style
@@ -30,6 +43,8 @@ def get_page(style):
     pages = int(base.page_rx.search(p.text)[1])
     return pages, index
 
+
+@generalize
 def load(index, folder=None):
     """Load moives
 
@@ -43,16 +58,6 @@ def load(index, folder=None):
     Example:
         load([29964, (34533, 24543)])  # load index29964, 34533-24543
     """
-
-    if isinstance(index, list):
-        for n in index:
-            load(n)
-        return
-    elif isinstance(index, tuple):
-        a, b = min(index), max(index)
-        for n in range(a, b+1):
-            load(n)
-        return
 
     URL = "http://www.417mm.com/player/index%d.html?%d-0-0" % (index, index)
     soup = base.url2soup(URL)
@@ -82,4 +87,4 @@ def clever_load(style, lb, ub):
 
 if __name__ == '__main__':
     # clever_load('日韩', lb=1, ub=7)
-    load([29964, (34533, 24543)])
+    load([29963, (29964, 29971), (34538, 34543)])
