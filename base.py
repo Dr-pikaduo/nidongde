@@ -5,22 +5,31 @@ import re
 import requests
 import bs4
 
-STYLES = {'乱伦':27, '人妻':28, '偷拍':29, '学生':34, '巨乳':54, '日韩':55, '欧美':56, '动漫':58}
+ll = b'\xe4\xb9\xb1\xe4\xbc\xa6'.decode('utf-8')
+rq = b'\xe4\xba\xba\xe5\xa6\xbb'.decode('utf-8')
+tp = b'\xe5\x81\xb7\xe6\x8b\x8d'.decode('utf-8')
+jr = b'\xe5\xb7\xa8\xe4\xb9\xb3'.decode('utf-8')
+xs = b'\xe5\xad\xa6\xe7\x94\x9f'.decode('utf-8')
+rh = b'\xe6\x97\xa5\xe9\x9f\xa9'.decode('utf-8')
+om = b'\xe6\xac\xa7\xe7\xbe\x8e'.decode('utf-8')
+dm = b'\xe5\x8a\xa8\xe6\xbc\xab'.decode('utf-8')
 
-digit_rx = re.compile('\d+')
-page_rx = re.compile('\d/(\d+)')
+STYLES = {ll:27, rq:28, tp:29, xs:34, jr:54, rh:55, om:56, dm:58}
+
+digit_rx = re.compile(r'\d+')
+page_rx = re.compile(r'\d/(\d+)')
 mp4_rx = re.compile('https://.*\\.mp4')
 
 
 def url2soup(url):
     # url -> soup
     response = requests.get(url)
-    if response.encoding == 'ISO-8859-1':
-        encodings = requests.utils.get_encodings_from_content(response.text)
-        if encodings:
-            encoding = encodings[0]
-        else:
-            encoding = response.apparent_encoding
+    # response.encoding == 'ISO-8859-1':
+    encodings = requests.utils.get_encodings_from_content(response.text)
+    if encodings:
+        encoding = encodings[0]
+    else:
+        encoding = response.apparent_encoding
     encode_content = response.content.decode(encoding, 'replace')
     return bs4.BeautifulSoup(encode_content, "html.parser")
 

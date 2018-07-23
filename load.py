@@ -9,9 +9,11 @@ import pathlib
 
 import base
 
-# style: number
+HOME = 'http://www.417mm.com/'
+
 
 def generalize(f):
+    # decorator extending the domain of f
     def g(index, *args, **kwargs):
         if isinstance(index, list):
             for n in index:
@@ -35,7 +37,7 @@ def get_page(style):
         tuple -- (number of pages, max index)
     """
 
-    URL = "http://www.417mm.com/list/index%d.html" % base.STYLES[style]
+    URL = HOME + "/list/index%d.html" % base.STYLES[style]
     soup = base.url2soup(URL)
     s = soup.find_all('div', {'class':'con'})[0]
     index = int(base.digit_rx.search(s.a['href'])[0])
@@ -85,6 +87,8 @@ def clever_load(style, lb, ub):
     for k in range(index1, index2+1):
         load(k) 
 
+
 if __name__ == '__main__':
+
     # clever_load('日韩', lb=1, ub=7)
-    load([29963, (29964, 29971), (34538, 34543)])
+    load([(29968, 29971), (34538, 34543)])
