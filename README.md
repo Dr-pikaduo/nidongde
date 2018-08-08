@@ -4,6 +4,8 @@ nidongde is a Chinese phrase for "you know". Please control yourself!
 Make sure you are older than 18!
 
 
+## Scripts
+
 ## load.py
 load vedios
 
@@ -17,6 +19,9 @@ search vedios with keywords (and styles)
 
 ## load_novels.py
 load novels.
+
+## clt
+script.py -i [index]
 
 ## misc
 I get first `✭star` in my github-life.
