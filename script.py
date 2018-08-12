@@ -10,7 +10,8 @@ def ld(args):
     load.load(args.index, args.folder)
 
 def srch(args):
-    search.search(args.keyword, args.style)
+    for a in search.search(args.keyword, args.style):
+        print(a)
 
 parser = argparse.ArgumentParser(description='Load avs')
 subparsers = parser.add_subparsers(title='loading/searching command')
@@ -20,7 +21,7 @@ parser_l.add_argument('-f', dest='folder', action='store', metavar='FOLDER', def
 parser_l.add_argument('-o', dest='operator', action='store', metavar='OPERATOR', default=ld)
 
 parser_s = subparsers.add_parser('search', help='Search avs with keywords')
-parser_s.add_argument('-k', dest='keyword', action='store', metavar='KEYWORD', default=None, help='any keyword')
+parser_s.add_argument('-k', dest='keyword', action='store', metavar='KEYWORD', help='any keyword')
 parser_s.add_argument('-s', dest='style', action='store', metavar='STLYE', default=None, help='the style of the movies')
 parser_s.add_argument('-o', dest='operator', action='store', metavar='OPERATOR', default=srch)
 
