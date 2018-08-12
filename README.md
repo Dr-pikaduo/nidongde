@@ -21,8 +21,11 @@ search vedios with keywords (and styles)
 load novels.
 
 ## clt
+
+```bash
 script.py load -i [index]
 script.py search -k keyword -s style
+```
 
 ## misc
 I get first `✭star` in my github-life.
