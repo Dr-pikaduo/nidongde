@@ -46,6 +46,15 @@ def extract(rx, s):
 
 
 def str2index(s):
+    '''str -> index
+    
+    Arguments:
+        s {str} --  such as '111, 222-333, 444'
+    
+    Returns:
+        index
+    '''
+    
     if ',' not in a:
         return int(a)
     index = []

@@ -61,6 +61,9 @@ def load(index, folder=None):
         load([29964, (34533, 24543)])  # load index29964, 34533-24543
     """
 
+    if isinstance(index, str):
+        index = base.str2index(index)
+
     URL = "http://www.417mm.com/player/index%d.html?%d-0-0" % (index, index)
     soup = base.url2soup(URL)
     for s in soup.find_all('script', {"type": "text/javascript"}):
@@ -72,7 +75,7 @@ def load(index, folder=None):
     html = html.content
 
     if folder is None:
-        folder = pathlib.Path('AVs')
+        folder = pathlib.Path(base.defaultFolder).expanduser()
     if not folder.exists():
         folder.mkdir(parents=True)
     path = (folder / ('video%d.mp4' % index))
@@ -91,4 +94,4 @@ def clever_load(style, lb, ub):
 if __name__ == '__main__':
 
     # clever_load('日韩', lb=1, ub=7)
-    load([(29968, 29971), (34538, 34543)])
+    clever_load('人妻', lb=10, ub=11)
