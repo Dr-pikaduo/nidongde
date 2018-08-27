@@ -66,3 +66,11 @@ def str2index(s):
         index.append(i)
 
     return index
+
+from fake_useragent import UserAgent
+ua = UserAgent()
+
+def get(url, headers={}):
+    if not headers:
+        headers = ua.opera
+    return requests.get(url, headers)
