@@ -28,9 +28,18 @@ mp4_rx = re.compile('https://.*\\.mp4')
 #   'https': 'http://172.18.101.221:1080',
 # }
 
-def url2soup(url):
+from fake_useragent import UserAgent
+ua = UserAgent()
+
+def get(url, headers={}):
+    if not headers:
+        headers = ua.opera
+    return requests.get(url, headers)
+
+
+def url2soup(url, headers={}):
     # url -> soup
-    response = requests.get(url)
+    response = get(url, headers={})
     # response.encoding == 'ISO-8859-1':
     encodings = requests.utils.get_encodings_from_content(response.text)
     if encodings:
@@ -55,8 +64,8 @@ def str2index(s):
         index
     '''
     
-    if ',' not in a:
-        return int(a)
+    if s.isdigit():
+        return int(s)
     index = []
     for a in s.split(','):
         if '-' in a:
@@ -67,10 +76,17 @@ def str2index(s):
 
     return index
 
-from fake_useragent import UserAgent
-ua = UserAgent()
 
-def get(url, headers={}):
-    if not headers:
-        headers = ua.opera
-    return requests.get(url, headers)
+def generalize(f):
+    # decorator extending the domain of f
+    def g(index, *args, **kwargs):
+        if isinstance(index, list):
+            for n in index:
+                g(n, *args, **kwargs)
+        elif isinstance(index, tuple): # tuple of ints
+            a, b = min(index), max(index)
+            for n in range(a, b+1):
+                f(n, *args, **kwargs)
+        else:  # index: int
+            f(index, *args, **kwargs)
+    return g

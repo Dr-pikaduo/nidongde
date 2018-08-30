@@ -4,27 +4,11 @@
 '''load videos from www.417mm.com
 '''
 
-import requests
 import pathlib
 
 import base
 
 HOME = 'http://www.417mm.com/'
-
-
-def generalize(f):
-    # decorator extending the domain of f
-    def g(index, *args, **kwargs):
-        if isinstance(index, list):
-            for n in index:
-                g(n, *args, **kwargs)
-        elif isinstance(index, tuple): # tuple of ints
-            a, b = min(index), max(index)
-            for n in range(a, b+1):
-                f(n, *args, **kwargs)
-        else:  # index: int
-            f(index, *args, **kwargs)
-    return g
 
 
 def get_page(style):
@@ -46,8 +30,8 @@ def get_page(style):
     return pages, index
 
 
-@generalize
-def load(index, folder=None):
+@base.generalize
+def load(index, folder=base.defaultFolder):
     """Load moives
 
     Find the indexes of movies wantted on www.417mm.com,
@@ -64,18 +48,18 @@ def load(index, folder=None):
     if isinstance(index, str):
         index = base.str2index(index)
 
-    URL = "http://www.417mm.com/player/index%d.html?%d-0-0" % (index, index)
+    URL = HOME + "/player/index%d.html?%d-0-0" % (index, index)
     soup = base.url2soup(URL)
     for s in soup.find_all('script', {"type": "text/javascript"}):
         if 'video' in s.text:
             mp4 = base.mp4_rx.search(s.text)[0]
             break
 
-    html = requests.get(mp4)
+    html = base.get(mp4)
     html = html.content
 
-    if folder is None:
-        folder = pathlib.Path(base.defaultFolder).expanduser()
+    if isinstance(folder, str):
+        folder = pathlib.Path(folder).expanduser()
     if not folder.exists():
         folder.mkdir(parents=True)
     path = (folder / ('video%d.mp4' % index))
@@ -94,4 +78,4 @@ def clever_load(style, lb, ub):
 if __name__ == '__main__':
 
     # clever_load('日韩', lb=1, ub=7)
-    clever_load('人妻', lb=10, ub=11)
+    load((15324, 15327))
