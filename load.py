@@ -31,7 +31,7 @@ def get_page(style):
 
 
 @base.generalize
-def load(index, folder=base.defaultFolder):
+def load(index, folder=base.defaultAVFolder):
     """Load moives
 
     Find the indexes of movies wantted on www.417mm.com,
@@ -54,12 +54,13 @@ def load(index, folder=base.defaultFolder):
         if 'video' in s.text:
             mp4 = base.mp4_rx.search(s.text)[0]
             break
-
     html = base.get(mp4)
     html = html.content
 
     if isinstance(folder, str):
         folder = pathlib.Path(folder).expanduser()
+    elif folder is None:
+        folder = pathlib.Path(base.defaultAVFolder).expanduser()
     if not folder.exists():
         folder.mkdir(parents=True)
     path = (folder / ('video%d.mp4' % index))
@@ -78,4 +79,4 @@ def clever_load(style, lb, ub):
 if __name__ == '__main__':
 
     # clever_load('日韩', lb=1, ub=7)
-    load((15324, 15327))
+    load((18318, 18323))

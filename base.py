@@ -5,7 +5,7 @@ import re
 import requests
 import bs4
 
-defaultFolder = '~/Folders/生活/成人相关/AVs'
+defaultAVFolder = '~/Folders/生活/成人相关/AVs'
 
 ll = b'\xe4\xb9\xb1\xe4\xbc\xa6'.decode('utf-8')
 rq = b'\xe4\xba\xba\xe5\xa6\xbb'.decode('utf-8')
@@ -32,8 +32,6 @@ from fake_useragent import UserAgent
 ua = UserAgent()
 
 def get(url, headers={}):
-    if not headers:
-        headers = ua.opera
     return requests.get(url, headers)
 
 

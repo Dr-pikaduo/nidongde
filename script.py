@@ -7,16 +7,23 @@ import load
 import search
 
 def _load(args):
-    load.load(base.str2index(args.index), args.folder)
+    load.load(args.index, args.folder)
 
 def _search(args):
     for a in search.search(args.keyword, args.style):
         print(a)
 
+class IndexParseAction(argparse.Action):
+    def __init__(self, option_strings, dest, nargs=None, *args, **kwargs):
+        super(IndexParseAction, self).__init__(option_strings, dest, *args, **kwargs)
+
+    def __call__(self, parser, namespace, values, option_string=None):
+        setattr(namespace, self.dest, base.str2index(values))
+
 parser = argparse.ArgumentParser(description='Load Avs')
 subparsers = parser.add_subparsers(title='Loading/Searching Command')
 parser_l = subparsers.add_parser('load', help='Load avs with indexes')
-parser_l.add_argument('-i', dest='index', action='store', metavar='INDEX', help='the indexes')
+parser_l.add_argument('-i', dest='index', metavar='INDEX', help='the indexes', action=IndexParseAction)
 parser_l.add_argument('-f', dest='folder', action='store', metavar='FOLDER', default=None, help='the folder where the movies are saved')
 parser_l.set_defaults(func=_load)
 
