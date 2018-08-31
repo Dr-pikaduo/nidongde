@@ -45,8 +45,8 @@ def load(index, folder=base.defaultAVFolder):
         load([29964, (34533, 24543)])  # load index29964, 34533-24543
     """
 
-    if isinstance(index, str):
-        index = base.str2index(index)
+    # if isinstance(index, str):
+    #     index = base.str2index(index)
 
     URL = HOME + "/player/index%d.html?%d-0-0" % (index, index)
     soup = base.url2soup(URL)
@@ -54,8 +54,7 @@ def load(index, folder=base.defaultAVFolder):
         if 'video' in s.text:
             mp4 = base.mp4_rx.search(s.text)[0]
             break
-    html = base.get(mp4)
-    html = html.content
+    html = base.get(mp4).content
 
     if isinstance(folder, str):
         folder = pathlib.Path(folder).expanduser()
