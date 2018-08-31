@@ -31,13 +31,14 @@ mp4_rx = re.compile('https://.*\\.mp4')
 from fake_useragent import UserAgent
 ua = UserAgent()
 
-def get(url, headers={}):
+def get(url, headers={'User-Agent': ua.chrome}):
+    print(ua.chrome)
     return requests.get(url, headers)
 
 
-def url2soup(url, headers={}):
+def url2soup(url, headers={'User-Agent': ua.chrome}):
     # url -> soup
-    response = get(url, headers={})
+    response = get(url, headers=headers)
     # response.encoding == 'ISO-8859-1':
     encodings = requests.utils.get_encodings_from_content(response.text)
     if encodings:
