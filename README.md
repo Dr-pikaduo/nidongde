@@ -11,7 +11,7 @@ fake-useragent
 
 ## Scripts
 
-## load.py
+## load.py (deprecated)
 load vedios
 
 ```
@@ -19,7 +19,7 @@ load vedios
 load([29960, [29961, 29963], (29964, 29971), (34538, 34543)])
 ```
 
-## search.py
+## search.py (deprecated)
 search vedios with keywords (and styles)
 
 ## load_novels.py
