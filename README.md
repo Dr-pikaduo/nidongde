@@ -27,8 +27,10 @@ load novels.
 
 ## load_movies.py (recommended)
 Load movies with OOP, integrate load.py and search.py.
+```
 Movie.load  == load in load.py
 Movie.search == search in search.py
+```
 
 ## clt
 
