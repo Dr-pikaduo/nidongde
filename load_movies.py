@@ -39,7 +39,7 @@ def clever_load(style, lb, ub):
     index1 = index - ub + 1
     index2 = index - lb + 1
     for k in range(index1, index2+1):
-        load(k) 
+        Movie.load(k) 
 
 
 default_style = '人妻'
@@ -55,6 +55,9 @@ class Movie(base.LoadItem):
         self.video = video
         self.actress = actress
         self.index = index
+
+    def __str__(self):
+        return '%s, %d' % (self.title, self.index)
     
     @staticmethod
     def fromIndex(index):
@@ -86,7 +89,7 @@ class Movie(base.LoadItem):
 
     @staticmethod
     @base.generalize
-    def load(index, folder=base.defaultAVFolder):
+    def load(index, folder=base.defaultAVFolder, verbose=False):
         """Load moives
 
         Find the indexes of movies wantted on www.417mm.com,
@@ -104,6 +107,8 @@ class Movie(base.LoadItem):
         #     index = base.str2index(index)
 
         movie = Movie.fromIndex(index)
+        if verbose:
+            print(movie)
         movie.save(folder=base.defaultAVFolder)
 
 
@@ -120,15 +125,17 @@ class Movie(base.LoadItem):
                         yield Movie(title=a.text, index=int(base.extract(base.digit_rx, a.get('href'))))
         elif isinstance(style, (tuple, list)):
             for sty in style:
-                for m in search(keyword, sty, pages):
+                for m in Movie.search(keyword, sty, pages):
                     yield m
         else:
             for style in base.STYLES:
-                for m in search(keyword, style, pages):
+                for m in Movie.search(keyword, style, pages):
                     yield m
 
 
 if __name__ == '__main__':
 
     # clever_load('日韩', lb=1, ub=7)
-    Movie.load(33812)
+    # for m in Movie.search('女兒'):
+    #     print(m)
+    Movie.load(13468)

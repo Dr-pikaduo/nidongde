@@ -3,14 +3,14 @@
 
 import argparse
 import base
-import load
+import load_movies
 import search
 
 def _load(args):
-    load.load(args.index, args.folder)
+    load_movies.Movie.load(args.index, args.folder)
 
 def _search(args):
-    for a in search.search(args.keyword, args.style):
+    for a in load_movies.Movie.search(args.keyword, args.style):
         print(a)
 
 class IndexParseAction(argparse.Action):
