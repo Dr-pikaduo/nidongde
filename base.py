@@ -29,10 +29,24 @@ mp4_rx = re.compile('https://.*\\.mp4')
 # }
 
 from fake_useragent import UserAgent
-ua = UserAgent()
+ua = UserAgent(fallback='Your favorite Browser')
 
-def get(url, headers={'User-Agent': ua.chrome}):
-    print(ua.chrome)
+
+def get(url, headers={}, fake=None):
+    '''Get respond from url
+    
+    Arguments:
+        url {str} -- url
+    
+    Keyword Arguments:
+        headers {dict} -- header info (default: {{}})
+        fake {None | str} -- fake user agent (default: {None})
+    
+    Returns:
+        [type] -- [description]
+    '''
+    if fake:
+        headers.update({'User-Agent': getattr(ua, fake)})
     return requests.get(url, headers)
 
 
@@ -67,6 +81,7 @@ def str2index(s):
         return int(s)
     index = []
     for a in s.split(','):
+        a = a.strip()
         if '-' in a:
             i = tuple(int(i) for i in a.split('-'))
         else:
@@ -89,3 +104,10 @@ def generalize(f):
         else:  # index: int
             f(index, *args, **kwargs)
     return g
+
+
+class LoadItem:
+    # Load item
+    def __init__(self, title):
+        self.title = title
+
