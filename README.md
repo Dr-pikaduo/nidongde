@@ -11,21 +11,16 @@ fake-useragent
 
 ## Scripts
 
-## load.py (deprecated)
+### load.py (deprecated)
 load vedios
 
-```
-# load 29960, 29961, 29963, 29964-29971, 34538-34543
-Moive.load([29960, [29961, 29963], (29964, 29971), (34538, 34543)])
-```
-
-## search.py (deprecated)
+### search.py (deprecated)
 search vedios with keywords (and styles)
 
-## load_novels.py
+### load_novels.py
 load novels.
 
-## load_movies.py (recommended)
+### load_movies.py (recommended)
 Load movies with OOP, integrate load.py and search.py.
 ```
 Movie.load  == load in load.py
