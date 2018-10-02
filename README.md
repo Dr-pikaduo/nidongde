@@ -16,7 +16,7 @@ load vedios
 
 ```
 # load 29960, 29961, 29963, 29964-29971, 34538-34543
-load([29960, [29961, 29963], (29964, 29971), (34538, 34543)])
+Moive.load([29960, [29961, 29963], (29964, 29971), (34538, 34543)])
 ```
 
 ## search.py (deprecated)
@@ -30,6 +30,14 @@ Load movies with OOP, integrate load.py and search.py.
 ```
 Movie.load  == load in load.py
 Movie.search == search in search.py
+
+# Examples
+# load 29960, 29961, 29963, 29964-29971, 34538-34543
+Moive.load([29960, [29961, 29963], (29964, 29971), (34538, 34543)])
+
+# search movies with '人妻'
+for m in Movie.search('人妻')：
+    print(m)
 ```
 
 ## clt
