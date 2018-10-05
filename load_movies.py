@@ -44,37 +44,36 @@ def clever_load(style, lb, ub):
 
 default_style = '人妻'
 
-title_rx = re.compile(r'((?P<chapter>\d+)-)?(?P<title>\w+)')
+title_rx = re.compile(r'((?P<chapter>\d{1,2})-)?(?P<title>.+)')
 
 class Movie(base.LoadItem):
 
     def __init__(self, title, chapter=0, video='', actress='', index=0):
-        super(Movie, self).__init__()
-        self.title = title
+        super(Movie, self).__init__(title)
         self.chapter = chapter
         self.video = video
         self.actress = actress
         self.index = index
 
     def __str__(self):
-        return '%s, %d' % (self.title, self.index)
+        return '%s(%d) # %d' % (self.title, self.chapter, self.index)
     
     @staticmethod
     def fromIndex(index):
         URL = HOME + "/player/index%d.html?%d-0-0" % (index, index)
         soup = base.url2soup(URL)
         title = soup.find('h2', {'class':'m_T2'})
-        m = title_rx.match(title.text)
-        chapter = m.groupdict().get('chapter', 0)
+        m = title_rx.match(title.text).groupdict()
+        chapter = m.get('chapter', 0)
 
         for s in soup.find_all('script', {"type": "text/javascript"}):
             if 'video' in s.text:
                 mp4 = base.mp4_rx.search(s.text)[0]
                 break
-        return Movie(title=m['title'], chapter=chapter, video=mp4, index=index)
+        return Movie(title=m['title'], chapter=int(chapter), video=mp4, index=index)
 
 
-    def save(self, folder=base.defaultAVFolder):
+    def save(self, folder=base.defaultAVFolder, agent=None):
         html = base.get(self.video).content
 
         if isinstance(folder, str):
@@ -98,6 +97,7 @@ class Movie(base.LoadItem):
         Arguments:
             index {int|list[int]|tuple(int, int)} -- index
             folder -- the folder where videos are stored.
+            verbose {bool} -- show the info of movie
 
         Example:
             load([29964, (34533, 24543)])  # load index29964, 34533-24543
@@ -108,7 +108,7 @@ class Movie(base.LoadItem):
 
         movie = Movie.fromIndex(index)
         if verbose:
-            print(movie)
+            print('Loading', movie)
         movie.save(folder=base.defaultAVFolder)
 
 
@@ -134,8 +134,10 @@ class Movie(base.LoadItem):
 
 
 if __name__ == '__main__':
+    pass
 
     # clever_load('日韩', lb=1, ub=7)
-    # for m in Movie.search('女兒'):
+    # for m in Movie.search('教'):
     #     print(m)
-    Movie.load(13468)
+    #Movie.load([(8995,8997), (32197, 32198), ], verbose=True)
+    Movie.load(31529)

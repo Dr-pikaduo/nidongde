@@ -29,7 +29,6 @@ mp4_rx = re.compile('https://.*\\.mp4')
 # }
 
 from fake_useragent import UserAgent
-ua = UserAgent(fallback='Your favorite Browser')
 
 
 def get(url, headers={}, fake=None):
@@ -46,11 +45,12 @@ def get(url, headers={}, fake=None):
         [type] -- [description]
     '''
     if fake:
+        ua = UserAgent()
         headers.update({'User-Agent': getattr(ua, fake)})
     return requests.get(url, headers)
 
 
-def url2soup(url, headers={'User-Agent': ua.chrome}):
+def url2soup(url, headers={}):
     # url -> soup
     response = get(url, headers=headers)
     # response.encoding == 'ISO-8859-1':
@@ -60,7 +60,7 @@ def url2soup(url, headers={'User-Agent': ua.chrome}):
     else:
         encoding = response.apparent_encoding
     encode_content = response.content.decode(encoding, 'replace')
-    return bs4.BeautifulSoup(encode_content, "html.parser")
+    return bs4.BeautifulSoup(encode_content, "lxml")
 
 
 def extract(rx, s):
