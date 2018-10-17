@@ -38,7 +38,7 @@ for m in Movie.search('人妻')：
 ## clt
 
 ```bash
-script.py load -i [index]
+script.py load -i [index] (-v)
 script.py search -k keyword -s style
 ```
 
