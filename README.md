@@ -39,8 +39,9 @@ for m in Movie.search('人妻')：
 
 ```bash
 script.py load -i [index] (-v)
-script.py search -k keyword -s style
+script.py search -k keyword -s style -m (mask method)
 ```
+mask method: `mask`, `random` or any digit for Caesar
 
 ## misc
 I get first `✭star` in my github-life.
