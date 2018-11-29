@@ -7,6 +7,7 @@ import load_movies
 import search
 
 def _load(args):
+    print('Start to Load adult movie %s' % args.index)
     load_movies.Movie.load(args.index, args.folder, args.verbose)
 
 def _search(args):

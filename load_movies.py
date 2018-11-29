@@ -47,8 +47,8 @@ def caesar(s, k=8):
 
 import random
 
-def random_mask(s, repl='*'):
-    return ''.join(map(lambda x: repl if random.random()>0.5 else x, s))
+def random_mask(s, prob=0.75, repl='*'):
+    return ''.join(map(lambda x: repl if random.random()<prob else x, s))
 
 
 default_style = '人妻'
