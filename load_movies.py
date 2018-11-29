@@ -39,12 +39,22 @@ def clever_load(style, lb, ub):
     index1 = index - ub + 1
     index2 = index - lb + 1
     for k in range(index1, index2+1):
-        Movie.load(k) 
+        Movie.load(k)
+
+def caesar(s, k=8):
+    # Caesar cipher
+    return ''.join(map(chr, map(lambda x: x+k, map(ord, s))))
 
 
 default_style = '人妻'
 
 title_rx = re.compile(r'((?P<chapter>\d{1,2})-)?(?P<title>.+)')
+
+def index2url(index):
+    return HOME + "/player/index%d.html?%d-0-0" % (index, index)
+
+def style2url(style, page=1):
+    return HOME + "list/index%d_%d.html" % (base.STYLES[style], page)
 
 class Movie(base.LoadItem):
 
@@ -57,10 +67,18 @@ class Movie(base.LoadItem):
 
     def __str__(self):
         return '%s(%d) # %d' % (self.title, self.chapter, self.index)
+
+    def __format__(self, spec=None):
+        if spec == 'mask':
+            return '*' * len(self.title) + '(%d) # %d' % (self.chapter, self.index)
+        elif spce.isdigit():
+            return '%s(%d) # %d' % (caesar(self.title, int(spec)), self.chapter, self.index)
+        else:
+            return '%s(%d) # %d' % (self.title, self.chapter, self.index)
     
     @staticmethod
     def fromIndex(index):
-        URL = HOME + "/player/index%d.html?%d-0-0" % (index, index)
+        URL = index2url(index)
         soup = base.url2soup(URL)
         title = soup.find('h2', {'class':'m_T2'})
         m = title_rx.match(title.text).groupdict()
@@ -89,10 +107,7 @@ class Movie(base.LoadItem):
     @staticmethod
     @base.generalize
     def load(index, folder=base.defaultAVFolder, verbose=False):
-        """Load moives
-
-        Find the indexes of movies wantted on www.417mm.com,
-        then load it.
+        """Load moives with indexes
         
         Arguments:
             index {int|list[int]|tuple(int, int)} -- index
@@ -115,8 +130,10 @@ class Movie(base.LoadItem):
     @staticmethod
     def search(keyword, style=None, pages=200):
         if isinstance(style, str):
+            if pages is None:
+                pages = get_page(style)
             for page in range(pages):
-                URL = "http://www.417mm.com/list/index%d_%d.html" % (base.STYLES[style], page)
+                URL = style2url(style, page)
                 soup = base.url2soup(URL)
 
                 for div in soup.find_all('div', {'class':'con'}):
