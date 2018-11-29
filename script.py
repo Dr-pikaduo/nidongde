@@ -13,7 +13,8 @@ def _search(args):
     print('Start to search with keyword %s' % args.keyword)
     for m in load_movies.Movie.search(args.keyword, args.style):
         if args.mask:
-            print('{0:mask}'.format(m))
+            f = "Find {0:%s}" % args.mask
+            print(f.format(m))
         else:
             print(m)
 
@@ -36,7 +37,7 @@ parser_l.set_defaults(func=_load)
 parser_s = subparsers.add_parser('search', help='Search avs with keywords')
 parser_s.add_argument('-k', dest='keyword', action='store', metavar='KEYWORD', help='any keyword')
 parser_s.add_argument('-s', dest='style', action='store', metavar='STLYE', default=None, help='the style of the movies')
-parser_s.add_argument('-m', dest='mask', action='store_true', default=False, help='mask sensitive words')
+parser_s.add_argument('-m', dest='mask', action='store', default='', metavar='MASK', help='mask sensitive words')
 parser_s.set_defaults(func=_search)
 
 args = parser.parse_args()

@@ -45,10 +45,16 @@ def caesar(s, k=8):
     # Caesar cipher
     return ''.join(map(chr, map(lambda x: x+k, map(ord, s))))
 
+import random
+
+def random_mask(s, repl='*'):
+    return ''.join(map(lambda x: repl if random.random()>0.5 else x, s))
+
 
 default_style = '人妻'
 
 title_rx = re.compile(r'((?P<chapter>\d{1,2})-)?(?P<title>.+)')
+
 
 def index2url(index):
     return HOME + "/player/index%d.html?%d-0-0" % (index, index)
@@ -60,7 +66,10 @@ class Movie(base.LoadItem):
 
     def __init__(self, title, chapter=0, video='', actress='', index=0):
         super(Movie, self).__init__(title)
-        self.chapter = chapter
+        if chapter is None:
+            self.chapter = 0
+        else:
+            self.chapter = int(chapter)
         self.video = video
         self.actress = actress
         self.index = index
@@ -69,9 +78,11 @@ class Movie(base.LoadItem):
         return '%s(%d) # %d' % (self.title, self.chapter, self.index)
 
     def __format__(self, spec=None):
-        if spec == 'mask':
+        if spec in {'mask', 'm'}:
             return '*' * len(self.title) + '(%d) # %d' % (self.chapter, self.index)
-        elif spce.isdigit():
+        elif spec in {'random', 'r'}:
+            return '%s(%d) # %d' % (random_mask(self.title), self.chapter, self.index)
+        elif spec.isdigit():
             return '%s(%d) # %d' % (caesar(self.title, int(spec)), self.chapter, self.index)
         else:
             return '%s(%d) # %d' % (self.title, self.chapter, self.index)
@@ -82,13 +93,13 @@ class Movie(base.LoadItem):
         soup = base.url2soup(URL)
         title = soup.find('h2', {'class':'m_T2'})
         m = title_rx.match(title.text).groupdict()
-        chapter = m.get('chapter', 0)
+        chapter = m['chapter']
 
         for s in soup.find_all('script', {"type": "text/javascript"}):
             if 'video' in s.text:
                 mp4 = base.mp4_rx.search(s.text)[0]
                 break
-        return Movie(title=m['title'], chapter=int(chapter), video=mp4, index=index)
+        return Movie(title=m['title'], chapter=chapter, video=mp4, index=index)
 
 
     def save(self, folder=base.defaultAVFolder, agent=None):
@@ -128,10 +139,10 @@ class Movie(base.LoadItem):
 
 
     @staticmethod
-    def search(keyword, style=None, pages=200):
+    def search(keyword, style=None, pages=None):
         if isinstance(style, str):
             if pages is None:
-                pages = get_page(style)
+                pages, _ = get_page(style)
             for page in range(pages):
                 URL = style2url(style, page)
                 soup = base.url2soup(URL)
@@ -139,7 +150,9 @@ class Movie(base.LoadItem):
                 for div in soup.find_all('div', {'class':'con'}):
                     a = div.find('a', {'class':'txt'})
                     if a and keyword in a.text:
-                        yield Movie(title=a.text, index=int(base.extract(base.digit_rx, a.get('href'))))
+                        m = title_rx.match(a.text).groupdict()
+                        chapter = m['chapter']
+                        yield Movie(title=m['title'], chapter=chapter, index=int(base.extract(base.digit_rx, a['href'])))
         elif isinstance(style, (tuple, list)):
             for sty in style:
                 for m in Movie.search(keyword, sty, pages):
@@ -157,4 +170,4 @@ if __name__ == '__main__':
     # for m in Movie.search('教'):
     #     print(m)
     #Movie.load([(8995,8997), (32197, 32198), ], verbose=True)
-    Movie.load(31529)
+    # Movie.load(31529)
