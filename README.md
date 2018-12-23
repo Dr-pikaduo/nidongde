@@ -46,7 +46,7 @@ mask method: `mask`, `random` or any digit for Caesar
 ## misc
 I get first `✭star` in my github-life.
 
-## Similar project
+## Similar projects
 * [Porndl](https://github.com/Ybow/porndl)
 * [FBIWarning](https://github.com/nusr/FBIWarning)
 * [Pornsearch](https://github.com/LucasLeandro1204/Pornsearch)
