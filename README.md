@@ -43,6 +43,11 @@ script.py search -k keyword -s style -m (mask method)
 ```
 mask method: `mask`, `random` or any digit for Caesar
 
+## TO DO
+
+- crawl new websites
+- multi-threading
+
 ## misc
 I get first `✭star` in my github-life.
 
