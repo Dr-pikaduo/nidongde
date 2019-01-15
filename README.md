@@ -41,7 +41,7 @@ for m in Movie.search('人妻')：
 script.py load -i [index] (-v)
 script.py search -k keyword -s style -m (mask method)
 ```
-mask method: `mask`, `random` or any digit for Caesar
+mask method: `mask`, a float number (probability to mask any character) or any integer for Caesar
 
 ## TO DO
 
