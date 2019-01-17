@@ -4,9 +4,12 @@
 Make sure you are older than 18!
 
 ## Requirement
+
 requests
+
 bs4
-fake-useragent
+
+fake-useragent (Optional）
 
 ## Featrues
 
