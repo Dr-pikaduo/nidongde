@@ -1,173 +1,94 @@
-#!/usr/local/bin/python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-'''load videos from www.417mm.com
-'''
+"""
+load videos from adult website such as www.417mm.com
+If you want to load movies or other types of data from other websites,
+then you should override the methods: fromURL, _search
+"""
 
 import pathlib
 import re
 
-import base
+import base, utils, website
 
+default_website = website.web417
 
-HOME = 'http://www.417mm.com/'
-
-
-def get_page(style):
-    """get the number of pages and max index of the movies in certain style
-    
-    Arguments:
-        style {str} -- style of movie, one of the keys in STYLES
-    
-    Returns:
-        tuple -- (number of pages, max index)
-    """
-
-    URL = HOME + "/list/index%d.html" % base.STYLES[style]
-    soup = base.url2soup(URL)
-    s = soup.find_all('div', {'class':'con'})[0]
-    index = int(base.digit_rx.search(s.a['href'])[0])
-    p = soup.find('div', {'class': 'dede_pages'}).find('span')
-    pages = int(base.page_rx.search(p.text)[1])
-    return pages, index
-
-
-
-def clever_load(style, lb, ub):
-    # load movies in some style from lb to ub
-    (pages, index) = get_page(style)
-    index1 = index - ub + 1
-    index2 = index - lb + 1
-    for k in range(index1, index2+1):
-        Movie.load(k)
-
-def caesar(s, k=8):
-    # Caesar cipher
-    return ''.join(map(chr, map(lambda x: x+k, map(ord, s))))
-
-import random
-
-def random_mask(s, prob=0.75, repl='*'):
-    return ''.join(map(lambda x: repl if random.random()<prob else x, s))
-
-
-default_style = '人妻'
+defaultAVFolder = '~/Folders/生活/成人相关/AVs'
 
 title_rx = re.compile(r'((?P<chapter>\d{1,2})-)?(?P<title>.+)')
 
-
-def index2url(index):
-    return HOME + "/player/index%d.html?%d-0-0" % (index, index)
-
-def style2url(style, page=1):
-    return HOME + "list/index%d_%d.html" % (base.STYLES[style], page)
-
 class Movie(base.LoadItem):
-
-    def __init__(self, title, chapter=0, video='', actress='', index=0):
-        super(Movie, self).__init__(title)
-        if chapter is None:
-            self.chapter = 0
-        else:
-            self.chapter = int(chapter)
-        self.video = video
-        self.actress = actress
-        self.index = index
+    website = default_website
+    chapter = None
+    folder = pathlib.Path(defaultAVFolder).expanduser()
 
     def __str__(self):
-        return '%s(%d) # %d' % (self.title, self.chapter, self.index)
+        if self.chapter:
+            return '%s(%d) # %d' % (self.title, self.chapter, self.index)
+        else:
+            return '%s # %d' % (self.title, self.index)
 
     def __format__(self, spec=None):
         if spec in {'mask', 'm'}:
             return '*' * len(self.title) + '(%d) # %d' % (self.chapter, self.index)
-        elif spec in {'random', 'r'}:
-            return '%s(%d) # %d' % (random_mask(self.title), self.chapter, self.index)
+        elif '.' in spec:
+            return '%s(%d) # %d' % (utils.random_mask(self.title, float(spec)), self.chapter, self.index)
         elif spec.isdigit():
-            return '%s(%d) # %d' % (caesar(self.title, int(spec)), self.chapter, self.index)
+            return '%s(%d) # %d' % (utils.caesar(self.title, int(spec)), self.chapter, self.index)
         else:
             return '%s(%d) # %d' % (self.title, self.chapter, self.index)
-    
-    @staticmethod
-    def fromIndex(index):
-        URL = index2url(index)
-        soup = base.url2soup(URL)
-        title = soup.find('h2', {'class':'m_T2'})
-        m = title_rx.match(title.text).groupdict()
-        chapter = m['chapter']
 
-        for s in soup.find_all('script', {"type": "text/javascript"}):
-            if 'video' in s.text:
-                mp4 = base.mp4_rx.search(s.text)[0]
-                break
-        return Movie(title=m['title'], chapter=chapter, video=mp4, index=index)
+    def save(self, folder=None):
+        filename = 'av%d.mp4' % self.index
+        super(Movie, self).save(folder, filename)
 
-
-    def save(self, folder=base.defaultAVFolder, agent=None):
-        html = base.get(self.video).content
-
-        if isinstance(folder, str):
-            folder = pathlib.Path(folder).expanduser()
-        elif folder is None:
-            folder = pathlib.Path(base.defaultAVFolder).expanduser()
-        if not folder.exists():
-            folder.mkdir(parents=True)
-        path = (folder / ('video%d.mp4' % self.index))
-        path.write_bytes(html)
-
-
-    @staticmethod
-    @base.generalize
-    def load(index, folder=base.defaultAVFolder, verbose=False):
-        """Load moives with indexes
+    @classmethod
+    def fromURL(cls, URL):
+        """find movie in url, url -> movie
         
         Arguments:
-            index {int|list[int]|tuple(int, int)} -- index
-            folder -- the folder where videos are stored.
-            verbose {bool} -- show the info of movie
-
-        Example:
-            load([29964, (34533, 24543)])  # load index29964, 34533-24543
+            URL {str}
+        
+        Returns:
+            Movie
         """
-
-        # if isinstance(index, str):
-        #     index = base.str2index(index)
-
-        movie = Movie.fromIndex(index)
-        if verbose:
-            print('Loading', movie)
-        movie.save(folder=base.defaultAVFolder)
-
+        soup = utils.url2soup(URL)
+        title = soup.find('h2', {'class':'m_T2'})
+        m = title_rx.match(title.text)
+        chapter = int(m['chapter']) if m['chapter'] else 0
+        for s in soup.find_all('script', {"type": "text/javascript"}):
+            if 'video' in s.text:
+                mp4 = utils.mp4_rx.search(s.text)[0]
+                return Movie(title=m['title'], chapter=chapter, data=mp4)
 
     @staticmethod
-    def search(keyword, style=None, pages=None):
-        if isinstance(style, str):
-            if pages is None:
-                pages, _ = get_page(style)
-            for page in range(pages):
-                URL = style2url(style, page)
-                soup = base.url2soup(URL)
+    def _search(keyword, style, page=1):
+        """Search movies in one page
+        
+        Arguments:
+            keyword {str} -- keyword for searching movies
+            style {str} -- the style of movies that you search
+            page {int} -- in which page you search them
+        
+        Yields:
+            Movie
+        """
+        URL = Movie.website.style2url(style, page)
+        soup = utils.url2soup(URL)
 
-                for div in soup.find_all('div', {'class':'con'}):
-                    a = div.find('a', {'class':'txt'})
-                    if a and keyword in a.text:
-                        m = title_rx.match(a.text).groupdict()
-                        chapter = m['chapter']
-                        yield Movie(title=m['title'], chapter=chapter, index=int(base.extract(base.digit_rx, a['href'])))
-        elif isinstance(style, (tuple, list)):
-            for sty in style:
-                for m in Movie.search(keyword, sty, pages):
-                    yield m
-        else:
-            for style in base.STYLES:
-                for m in Movie.search(keyword, style, pages):
-                    yield m
+        for div in soup.find_all('div', {'class':'con'}):
+            t = div.find('a', {'class':'txt'})
+            if t and keyword in t.text:
+                m = title_rx.match(t.text)
+                chapter = int(m['chapter']) if m['chapter'] else 0
+                yield Movie(title=m['title'], chapter=chapter, index=int(utils.digit_rx.search(t['href'])[0]))
 
 
 if __name__ == '__main__':
-    pass
 
     # clever_load('日韩', lb=1, ub=7)
     # for m in Movie.search('教'):
     #     print(m)
-    #Movie.load([(8995,8997), (32197, 32198), ], verbose=True)
+    Movie.load([(32198, 32199), ], verbose=True, folder=defaultAVFolder)
     # Movie.load(31529)

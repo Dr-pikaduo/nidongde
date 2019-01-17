@@ -11,11 +11,10 @@ import base
 rx_title = re.compile(r'【(?P<title>\w+)】（(?P<chapter>\w+)）')
 rx_author = re.compile(r'【作者：(?P<author>\w+)】')
 
-class Novel(object):
+class Novel(base.LoadItem):
     """docstring for Novel"""
     def __init__(self, title, chapter, body='', author=''):
-        super(Novel, self).__init__()
-        self.title = title
+        super(Novel, self).__init__(title)
         self.chapter = chapter
         self.body = body
         self.author = author
@@ -63,5 +62,5 @@ class Novel(object):
         return obj
 
 
-n = Novel.load(index=27626)
+n = Novel.load(index=27611)
 print(n)

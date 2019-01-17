@@ -2,12 +2,11 @@
 # -*- coding: utf-8 -*-
 
 import argparse
-import base
+import utils
 import load_movies
-import search
 
 def _load(args):
-    print('Start to Load adult movie %s' % args.index)
+    print('Start to Load adult movie %s' % utils.index2str(args.index))
     load_movies.Movie.load(args.index, args.folder, args.verbose)
 
 def _search(args):
@@ -24,7 +23,7 @@ class IndexParseAction(argparse.Action):
         super(IndexParseAction, self).__init__(option_strings, dest, *args, **kwargs)
 
     def __call__(self, parser, namespace, values, option_string=None):
-        setattr(namespace, self.dest, base.str2index(values))
+        setattr(namespace, self.dest, utils.str2index(values))
 
 parser = argparse.ArgumentParser(description='Load Avs')
 parser.add_argument('-a', dest='agent', metavar='USER_AGENT', help='a fake agent')
@@ -38,7 +37,7 @@ parser_l.set_defaults(func=_load)
 parser_s = subparsers.add_parser('search', help='Search avs with keywords')
 parser_s.add_argument('-k', dest='keyword', action='store', metavar='KEYWORD', help='any keyword')
 parser_s.add_argument('-s', dest='style', action='store', metavar='STLYE', default=None, help='the style of the movies')
-parser_s.add_argument('-m', dest='mask', action='store', default='', metavar='MASK', help='mask sensitive words')
+parser_s.add_argument('-m', dest='mask', action='store', default='', metavar='MASK', help='mask sensitive words, mask|random|caesar')
 parser_s.set_defaults(func=_search)
 
 args = parser.parse_args()
