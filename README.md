@@ -46,6 +46,12 @@ for m in Movie.search('人妻')：
 script.py load -i [index] (-v)
 script.py search -k keyword -s style -m (mask method)
 ```
+
+Example:
+```bash
+script.py search -k 人妻 [-s 人妻]
+script.py load -i 39818-39822
+```
 mask method: `mask`, a float number (probability to mask any character) or any integer for Caesar
 
 ## TO DO
