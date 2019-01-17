@@ -8,6 +8,11 @@ requests
 bs4
 fake-useragent
 
+## Featrues
+
+- multi-threads, use `threading` to load data
+- extensible, define `website` to operate the urls
+
 
 ## Scripts
 
