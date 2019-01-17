@@ -27,8 +27,10 @@ def caesar(s, k=8):
 def random_mask(s, prob=0.75, repl='*'):
     return ''.join(map(lambda x: repl if random.random()<prob else x, s))
 
-
-from fake_useragent import UserAgent
+try:
+    from fake_useragent import UserAgent
+except:
+    pass
 
 
 def get(url, headers={}, fake=None):
