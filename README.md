@@ -17,6 +17,10 @@ fake-useragent (Optional）
 - multi-threads, use `threading` to load data
 - extensible, define `website` to operate the urls
 
+## Framework
+
+![](https://github.com/Freakwill/nidongde/blob/master/framework.png)
+
 
 ## Scripts
 
