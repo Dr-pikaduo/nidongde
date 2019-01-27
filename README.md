@@ -13,6 +13,7 @@ fake-useragent (Optional）
 
 ## Featrues
 
+- A mature framework
 - multi-threads, use `threading` to load data
 - extensible, define `website` to operate the urls
 
