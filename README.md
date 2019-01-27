@@ -66,6 +66,7 @@ mask method: `mask`, a float number (probability to mask any character) or any i
 
 - crawl new websites
 - multi-threading
+- load novels
 
 ## misc
 I get first `✭star` in my github-life.
