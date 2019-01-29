@@ -33,6 +33,13 @@ search vedios with keywords (and styles)
 ### load_novels.py
 search and load novels.
 
+```python
+from nidongde import *
+
+for m in Novel.search('爸爸'):
+    print(m)
+```
+
 ### load_movies.py (recommended)
 Load movies with OOP, integrate load.py and search.py.
 
