@@ -3,9 +3,8 @@
 
 import re
 
-import utils
-import website
-
+from nidongde import utils
+from nidongde.website.website import *
 
 # Define website: www.417mm.com
 ll = b'\xe4\xb9\xb1\xe4\xbc\xa6'.decode('utf-8')
@@ -18,7 +17,7 @@ om = b'\xe6\xac\xa7\xe7\xbe\x8e'.decode('utf-8')
 dm = b'\xe5\x8a\xa8\xe6\xbc\xab'.decode('utf-8')
 
 
-class web417(metaclass=website.WebsiteLike):
+class web417(metaclass=WebsiteLike):
     """Define methods to operate urls
     
     Variables:

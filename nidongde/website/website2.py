@@ -3,10 +3,11 @@
 
 import re
 
-import website
+from nidongde import utils
+from nidongde.website.website import *
 
 
-class web_t077ee(metaclass=website.WebsiteLike):
+class web_t077ee(metaclass=WebsiteLike):
 
     home = "http://www.t077ee.com"
     styles = ['亚洲风情', '日韩经典', '国内自拍', '欧美激情', '中文字幕', '强奸乱伦', '制服诱惑', '巨乳专区']
@@ -16,13 +17,13 @@ class web_t077ee(metaclass=website.WebsiteLike):
     @classmethod
     def get_page(cls, style='亚洲风情'):
         URL = cls.style2url(style)
-        soup = base.url2soup(URL)
+        soup = utils.url2soup(URL)
 
         cl = soup.find('div', {'class': 'channellist box mb bg'})
-        indexes =[int(base.digit_rx.search(li.a['href'])[0]) for li in cl.find_all('li')]
+        indexes =[int(utils.digit_rx.search(li.a['href'])[0]) for li in cl.find_all('li')]
 
         p = soup.find('div', {'class': 'page'})
-        pages = int(base.page_rx.search(p.text)[1])
+        pages = int(utils.page_rx.search(p.text)[1])
         return pages, indexes
 
     @classmethod
