@@ -37,6 +37,8 @@ search and load novels.
 Load movies with OOP, integrate load.py and search.py.
 
 ```python
+from nidongde import *
+
 Movie.load  == load in load.py
 Movie.search == search in search.py
 
@@ -46,6 +48,10 @@ Moive.load([29960, [29961, 29963], (29964, 29971), (34538, 34543)])
 
 # search movies with '人妻'
 for m in Movie.search('人妻')：
+    print(m)
+
+# search novels with '人妻'
+for m in Novel.search('人妻')：
     print(m)
 ```
 
