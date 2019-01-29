@@ -14,13 +14,25 @@ defaultWebsite = website.web_novel
 
 defaultANFolder = pathlib.Path('ANs')
 
-class Novel(base.LoadItem):
+class Novel(base.Item):
     """docstring for Novel"""
     website = defaultWebsite
     folder = defaultANFolder
+    chapter = ''
+    body = ''
+    option = ''
 
     def __str__(self):
-        return '{0.title} (0.chapter)\n{0.body}'.fromat(self)
+        if self.chapter:
+            return '{0.title} (0.chapter) - {0.author} # {0.index}'.format(self)
+        else:
+            return '{0.title} - {0.author} # {0.index}'.format(self)
+
+    def __repr__(self):
+        if self.chapter:
+            return '{0.title} (0.chapter) - {0.author}'.format(self)
+        else:
+            return '{0.title} - {0.author}'.format(self)
 
     @classmethod
     def fromURL(cls, URL):
@@ -47,4 +59,6 @@ class Novel(base.LoadItem):
         path.write_text(body, encoding='utf-8')
 
 
-Novel.load(index=32291)
+# Novel.load(index=32291)
+for n in Novel.search(keyword='爸爸'):
+    print('find', n)

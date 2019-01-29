@@ -8,9 +8,9 @@ import utils
 
 class Loadable(type):
     def __new__(cls, name, bases, attrs):
-        if name != 'LoadItem':
-            if 'fromURL' not in attrs:
-                raise NotImplementedError('Should define classmethod fromURL: url->item')
+        if name != 'Item':
+            if 'website' not in attrs:
+                raise NotImplementedError('Recommanded to define website to handle with urls')
         return super(Loadable, cls).__new__(cls, name, bases, attrs)
 
     def __call__(self, *args, **kwargs):
@@ -21,8 +21,8 @@ class Loadable(type):
         return o
 
 
-class LoadItem(metaclass=Loadable):
-    # Load item
+class Item(metaclass=Loadable):
+    # Loadable item
     folder = pathlib.Path('Data')
 
     @classmethod
@@ -71,7 +71,7 @@ class LoadItem(metaclass=Loadable):
         if isinstance(style, str):
             if pages is None:
                 pages, _ = cls.website.get_page(style)
-            for page in range(pages):
+            for page in range(1, pages+1):
                 for x in cls._search(keyword, style, page):
                     yield x
                 
@@ -108,4 +108,17 @@ class LoadItem(metaclass=Loadable):
         index2 = index - lb + 1
         for k in range(index1, index2+1):
             cls.load(k)
+
+    @classmethod
+    def fromURL(cls, URL):
+        """find item in url, url -> item
+        
+        Arguments:
+            URL {str}
+        
+        Returns:
+            Item
+        """
+
+        return getattr(cls.website, 'get_' + cls.__name__.lower())(URL, cls)
 

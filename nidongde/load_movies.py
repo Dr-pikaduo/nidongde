@@ -15,7 +15,7 @@ defaultWebsite = website.web417
 
 defaultAVFolder = pathlib.Path('AVs')
 
-class Movie(base.LoadItem):
+class Movie(base.Item):
     website = defaultWebsite
     chapter = None
     folder = defaultAVFolder
