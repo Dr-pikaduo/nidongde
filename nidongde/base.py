@@ -3,8 +3,7 @@
 
 import pathlib
 
-import utils
-
+import nidongde.utils as utils
 
 class Loadable(type):
     def __new__(cls, name, bases, attrs):

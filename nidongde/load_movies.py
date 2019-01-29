@@ -9,13 +9,13 @@ then you should override the methods: fromURL, _search
 
 import pathlib
 
-import base, utils, website
+from nidongde import website, utils, Item
 
 defaultWebsite = website.web417
 
 defaultAVFolder = pathlib.Path('AVs')
 
-class Movie(base.Item):
+class Movie(Item):
     website = defaultWebsite
     chapter = None
     folder = defaultAVFolder

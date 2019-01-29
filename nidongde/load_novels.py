@@ -3,18 +3,17 @@
 
 
 import re
-import pickle
 import pathlib
 
-import website
-import base, utils
 
+from nidongde import website, utils, Item
 
 defaultWebsite = website.web_novel
 
+
 defaultANFolder = pathlib.Path('ANs')
 
-class Novel(base.Item):
+class Novel(Item):
     """docstring for Novel"""
     website = defaultWebsite
     folder = defaultANFolder
@@ -58,7 +57,8 @@ class Novel(base.Item):
         body = self.body
         path.write_text(body, encoding='utf-8')
 
-
-# Novel.load(index=32291)
-for n in Novel.search(keyword='爸爸'):
-    print('find', n)
+if __name__ == '__main__':
+    
+    # Novel.load(index=32291)
+    for n in Novel.search(keyword='爸爸'):
+        print('find', n)
